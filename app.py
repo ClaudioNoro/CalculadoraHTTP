@@ -8,51 +8,52 @@ app = Flask(__name__)  # Cria uma instância da aplicação Flask utilizando o n
 # Define uma rota '/calcular' que aceita requisições HTTP POST
 @app.route('/calcular', methods=['POST'])
 def calcular():
-    data = request.get_json()  # Obtém o corpo da requisição no formato JSON
-    if not data:  # Verifica se nenhum dado foi enviado
-        error_message = 'Nenhum dado enviado'  # Define mensagem de erro
-        print("Erro:", error_message)  # Imprime o erro no terminal
-        return jsonify({'error': error_message}), 400  # Retorna uma resposta JSON com o erro e status 400 (Bad Request)
+    data = request.get_json()
+    if not data:
+        error_message = 'Nenhum dado enviado'
+        print("Erro:", error_message)
+        return jsonify({'error': error_message}), 400
 
-    num1 = data.get('num1')  # Extrai o valor associado à chave 'num1' do JSON
-    num2 = data.get('num2')  # Extrai o valor associado à chave 'num2' do JSON
-    operacao = data.get('operacao')  # Extrai o valor associado à chave 'operacao' do JSON
+    num1 = data.get('num1')
+    num2 = data.get('num2')
+    operacao = data.get('operacao')
 
-    # Verifica se os campos obrigatórios foram enviados
     if num1 is None or num2 is None or operacao is None:
-        error_message = 'Os campos num1, num2 e operacao sao obrigatorios.'
-        print("Erro:", error_message)  # Imprime o erro no terminal
-        return jsonify({'error': error_message}), 400  # Retorna uma resposta JSON com o erro e status 400
+        error_message = 'Os campos num1, num2 e operacao são obrigatórios.'
+        print("Erro:", error_message)
+        return jsonify({'error': error_message}), 400
 
     try:
-        num1 = float(num1)  # Converte o valor de num1 para float
-        num2 = float(num2)  # Converte o valor de num2 para float
-    except ValueError:  # Trata a exceção caso a conversão falhe (valores não numéricos)
+        num1 = float(num1)
+        num2 = float(num2)
+    except ValueError:
         error_message = 'num1 e num2 devem ser números.'
-        print("Erro:", error_message)  # Imprime o erro no terminal
-        return jsonify({'error': error_message}), 400  # Retorna uma resposta JSON com o erro e status 400
+        print("Erro:", error_message)
+        return jsonify({'error': error_message}), 400
 
-    # Executa a operação matemática conforme o valor de 'operacao'
-    if operacao == 'soma':
-        resultado = num1 + num2  # Realiza a soma dos dois números
-    elif operacao == 'subtracao':
-        resultado = num1 - num2  # Realiza a subtração dos dois números
-    elif operacao == 'multiplicacao':
-        resultado = num1 * num2  # Realiza a multiplicação dos dois números
-    elif operacao == 'divisao':
-        if num2 == 0:  # Verifica se a divisão por zero está sendo solicitada
-            error_message = 'Divisão por zero não é permitida.'
-            print("Erro:", error_message)  # Imprime o erro no terminal
-            return jsonify({'error': error_message}), 400  # Retorna uma resposta JSON com o erro e status 400
-        resultado = num1 / num2  # Realiza a divisão dos dois números
-    else:
-        error_message = 'Operação inválida. Utilize: soma, subtracao, multiplicacao ou divisao.'
-        print("Erro:", error_message)  # Imprime o erro no terminal
-        return jsonify({'error': error_message}), 400  # Retorna uma resposta JSON com o erro e status 400
+    # Utilizando o match-case para selecionar a operação
+    match operacao:
+        case 'soma':
+            resultado = num1 + num2  # Realiza a soma dos dois números
+        case 'subtracao':
+            resultado = num1 - num2  # Realiza a subtração dos dois números
+        case 'multiplicacao':
+            resultado = num1 * num2  # Realiza a multiplicação dos dois números
+        case 'divisao':
+            if num2 == 0:  # Verifica se a divisão por zero está sendo solicitada
+                error_message = 'Divisao por zero nao exite num intervalo real.'
+                print("Erro:", error_message)
+                return jsonify({'error': error_message}), 400
+            resultado = num1 / num2  # Realiza a divisão dos dois números
+        case _:
+            error_message = 'Operacao invalida. Utilize: soma, subtracao, multiplicacao ou divisao.'
+            print("Erro:", error_message)
+            return jsonify({'error': error_message}), 400
 
     # Exibe o resultado da operação no terminal para monitoramento
     print(f"Operação: {operacao} | {num1} e {num2} = {resultado}")
     return jsonify({'resultado': resultado})  # Retorna uma resposta JSON contendo o resultado da operação
+
 
 # Função para obter o IP local da máquina
 def get_local_ip():
@@ -83,8 +84,8 @@ if __name__ == '__main__':
 
     # Loop infinito para manter o programa ativo e permitir a entrada do usuário para encerramento
     while True:
-        print("Pressione 0 para encerrar a aplicação.")  # Informa ao usuário como encerrar a aplicação
-        opcao = input("Sua opção: ").strip()  # Lê a opção digitada pelo usuário, removendo espaços em branco
+        print("Pressione 0 para encerrar a aplicacao.")  # Informa ao usuário como encerrar a aplicação
+        opcao = input("Sua opcao: ").strip()  # Lê a opção digitada pelo usuário, removendo espaços em branco
         if opcao == '0':  # Se a opção for '0', o programa será encerrado
-            print("Encerrando a aplicação...")  # Imprime mensagem de encerramento no terminal
+            print("Encerrando a aplicacao...")  # Imprime mensagem de encerramento no terminal
             os._exit(0)  # Encerra imediatamente o processo, finalizando todas as threads
