@@ -4,7 +4,7 @@ OBS: não esquecer de executar o comando "python -m pip install flask" caso não
 Ao inserir um JSON na rota, ele devera conter a seguinte estrutura:
 {
 "num1": x,
-"num2" y,
+"num2": y,
 "operacao": "operacaoQueQueres"
 }
 sendo x e y qualquer número
